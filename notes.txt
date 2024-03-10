@@ -1,0 +1,13 @@
+- Whitelist domains as not to be redirect to other sketchy domains? (colly.AllowedDomains)
+- Check ob passend
+    - Not Tauschwohnung / Zwischenmiete
+    - PLZ/Ort passt
+    - Tag Nicht 1, 1.5 Zimmer
+    - Unter 40qm im Tag nicht
+
+- Need mechanism to know how far back to go.
+    - Ie from start cache last 5-10 advertisements (one might get deleted and therefore fuck up)
+        - If we see one of those URLs then stop going back
+    - Dont go further than 1 day ie. Or hard limit to 20 advertisements
+    - Maybe dont need it after all if we do it all 5 minutes. Then we are always on page 1 and can just see if we already have it
+        in our data storage.
