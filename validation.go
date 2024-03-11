@@ -16,6 +16,7 @@ var blacklistedPostalCodes = []int{
 	21129, // Neuenfelde
 	22453, //Niendorf
 	22041, //Wandsbek
+	22549, // Osdorf
 }
 
 func (app *Application) checkIfAdSuitable(ad Advertisement) bool {

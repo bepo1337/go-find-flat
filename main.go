@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"runtime"
 )
 
 const adFileName = "advertisements.json" // TODO from env
@@ -23,6 +25,9 @@ func main() {
 	app.writeAdMapToJson()
 
 	fmt.Println("Successfully scraped everything")
+	if amIServer() {
+		app.startServer()
+	}
 }
 
 func (app *Application) writeAdMapToJson() {
@@ -68,4 +73,27 @@ func (app *Application) initializeAdsFromFile(name string) {
 		app.ErrorLogger.Printf("Error during loading ad map: %s", err)
 	}
 	err = json.Unmarshal(bytes, &app.AdMap)
+}
+
+func (app *Application) startServer() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		adAsJsonByte, _ := json.Marshal(app.AdMap)
+		_, err := w.Write(adAsJsonByte)
+		if err != nil {
+			app.ErrorLogger.Printf("Error when writing json to writer: %s", err)
+		}
+		return
+	})
+
+	err := http.ListenAndServe(":9090", nil)
+	if err != nil {
+		app.ErrorLogger.Fatal("ListenAndServe: ", err)
+	}
+}
+
+func amIServer() bool {
+	if runtime.GOOS != "windows" {
+		return true
+	}
+	return false
 }
