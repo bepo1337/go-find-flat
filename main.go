@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -17,8 +18,19 @@ func main() {
 
 	app.InfoLogger.Println("Starting to scrape")
 	app.initKleinanzeigenScraper()
-	fmt.Print(app.AdList)
-	// go routine for other platforms?
+
+	writeAdListToJson(app)
+
+	fmt.Println("Successfully scraped everything")
+}
+
+func writeAdListToJson(app *Application) {
+	adAsJsonByte, _ := json.Marshal(app.AdList)
+
+	err := os.WriteFile("advertisements.json", adAsJsonByte, 0666)
+	if err != nil {
+		app.ErrorLogger.Printf("Error when writing to file: %s", err)
+	}
 }
 
 func newApplication() *Application {

@@ -1,10 +1,10 @@
 package main
 
 type Advertisement struct {
-	Name       string
-	URL        string
-	Quarter    string
-	PostalCode int
+	Name       string `json:"name"`
+	URL        string `json:"url"`
+	Quarter    string `json:"quarter"`
+	PostalCode int    `json:"postalCode"`
 }
 
 func (a Advertisement) Compare(b Advertisement) int {

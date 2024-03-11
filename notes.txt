@@ -11,3 +11,5 @@
     - Dont go further than 1 day ie. Or hard limit to 20 advertisements
     - Maybe dont need it after all if we do it all 5 minutes. Then we are always on page 1 and can just see if we already have it
         in our data storage.
+
+- Read URLs from env to make it generic
