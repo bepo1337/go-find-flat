@@ -13,3 +13,13 @@
         in our data storage.
 
 - Read URLs from env to make it generic
+- Start the program all 10 minutes should be alright
+    --> Load map into cache
+    --> Check for all ads on page if the url matches on in map
+    --> If not there yet --> Other checks
+    --> If all checks passed --> Add into list
+
+TODO 11.03
+ - Load from file into map (key is URL, should be unique) DONE
+ - When adding check if URL already exist DONE
+ - When adding check if is in quarter PLZ (maybe blacklisting is easier?)
