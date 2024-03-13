@@ -3,10 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-telegram/bot"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
 	"runtime"
+	"time"
 )
 
 const adFileName = "advertisements.json" // TODO from env
@@ -15,11 +18,21 @@ type Application struct {
 	InfoLogger  *log.Logger
 	ErrorLogger *log.Logger
 	AdMap       map[string]Advertisement
+	TelegramBot *bot.Bot
 }
 
 func main() {
 	app := newApplication()
+	ready := make(chan bool)
+	go app.StartBot(getDotEnvVariable("TELEGRAM_API_KEY"), ready)
+	<-ready
 
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+	for range ticker.C {
+		app.sendMesssage()
+		//TODO: every 5 min: scrape, check if new ads, if new --> send message
+	}
 	app.initializeAdsFromFile(adFileName)
 	app.scrape()
 	app.writeAdMapToJson()
@@ -96,4 +109,13 @@ func amIServer() bool {
 		return true
 	}
 	return false
+}
+
+func getDotEnvVariable(key string) string {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	return os.Getenv(key)
 }
