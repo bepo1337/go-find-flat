@@ -2,6 +2,7 @@ package main
 
 import "strings"
 
+// https://www.hamburg.de/postleitzahlen/
 var blacklistedPostalCodes = []int{
 	21035, 21037, // Allermöhe
 	22111, 22115, 22117, 22119, // Billstedt
@@ -12,11 +13,12 @@ var blacklistedPostalCodes = []int{
 	21075, 21079, // Harburg
 	21075, 21079, // Heimfeld
 	22043, 22045, // Jenfeld
-	21077, // Marmstorf
-	21129, // Neuenfelde
-	22453, //Niendorf
-	22041, //Wandsbek
-	22549, // Osdorf
+	21077,                      // Marmstorf
+	21129,                      // Neuenfelde
+	22453,                      //Niendorf
+	22041,                      //Wandsbek
+	22549,                      // Osdorf
+	22391, 22393, 22395, 22399, //Poppenbüttel
 }
 
 func (app *Application) checkIfAdSuitable(ad Advertisement) bool {

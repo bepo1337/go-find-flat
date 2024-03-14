@@ -7,9 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"golang.org/x/exp/maps"
 	"log"
-	"net/http"
 	"os"
-	"runtime"
 	"time"
 )
 
@@ -27,15 +25,11 @@ func main() {
 	app := newApplication()
 	app.initializeAdsFromFile(adFileName)
 
-	if amIServer() {
-		go app.startServer()
-	}
-
 	ready := make(chan bool)
 	go app.StartBot(getDotEnvVariable("TELEGRAM_API_KEY"), ready)
 	<-ready
 
-	ticker := time.NewTicker(30 * time.Second)
+	ticker := time.NewTicker(7 * time.Minute)
 	defer ticker.Stop()
 	for range ticker.C {
 		app.scrape()
@@ -90,29 +84,6 @@ func (app *Application) initializeAdsFromFile(name string) {
 		app.ErrorLogger.Printf("Error during loading ad map: %s", err)
 	}
 	err = json.Unmarshal(bytes, &app.AdMap)
-}
-
-func (app *Application) startServer() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		adAsJsonByte, _ := json.Marshal(app.AdMap)
-		_, err := w.Write(adAsJsonByte)
-		if err != nil {
-			app.ErrorLogger.Printf("Error when writing json to writer: %s", err)
-		}
-		return
-	})
-
-	err := http.ListenAndServe(":9090", nil)
-	if err != nil {
-		app.ErrorLogger.Fatal("ListenAndServe: ", err)
-	}
-}
-
-func amIServer() bool {
-	if runtime.GOOS != "windows" {
-		return true
-	}
-	return false
 }
 
 func getDotEnvVariable(key string) string {
