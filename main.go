@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-telegram/bot"
 	"github.com/joho/godotenv"
+	"golang.org/x/exp/maps"
 	"log"
 	"net/http"
 	"os"
@@ -18,29 +19,31 @@ type Application struct {
 	InfoLogger  *log.Logger
 	ErrorLogger *log.Logger
 	AdMap       map[string]Advertisement
+	NewAds      map[string]Advertisement
 	TelegramBot *bot.Bot
 }
 
 func main() {
 	app := newApplication()
+	app.initializeAdsFromFile(adFileName)
+
+	if amIServer() {
+		go app.startServer()
+	}
+
 	ready := make(chan bool)
 	go app.StartBot(getDotEnvVariable("TELEGRAM_API_KEY"), ready)
 	<-ready
 
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(30 * time.Second)
 	defer ticker.Stop()
 	for range ticker.C {
-		app.sendMesssage()
-		//TODO: every 5 min: scrape, check if new ads, if new --> send message
+		app.scrape()
+		app.writeAdMapToJson()
+		app.sendLastAdsAsMessage()
+		app.mergeAdLists()
 	}
-	app.initializeAdsFromFile(adFileName)
-	app.scrape()
-	app.writeAdMapToJson()
 
-	fmt.Println("Successfully scraped everything")
-	if amIServer() {
-		app.startServer()
-	}
 }
 
 func (app *Application) writeAdMapToJson() {
@@ -57,6 +60,7 @@ func newApplication() *Application {
 		InfoLogger:  log.New(os.Stdout, "INFO:\t", log.Ldate|log.Ltime),
 		ErrorLogger: log.New(os.Stdout, "ERROR:\t", log.Ldate|log.Ltime|log.Lshortfile),
 		AdMap:       make(map[string]Advertisement),
+		NewAds:      make(map[string]Advertisement),
 	}
 
 	return &app
@@ -70,7 +74,7 @@ func (app *Application) addAd(ad Advertisement) {
 		ok := app.checkIfAdSuitable(ad)
 		if ok {
 			app.InfoLogger.Printf("Adding advertisement: %+v\n", ad)
-			app.AdMap[ad.URL] = ad
+			app.NewAds[ad.URL] = ad
 		}
 	}
 }
@@ -118,4 +122,21 @@ func getDotEnvVariable(key string) string {
 	}
 
 	return os.Getenv(key)
+}
+
+func (app *Application) sendLastAdsAsMessage() {
+	//last count entries from json? cuz in map we cant know which are the last entries
+	for _, ad := range app.NewAds {
+		message := buildMessageFromAd(ad)
+		app.sendMessage(message)
+	}
+}
+
+func (app *Application) mergeAdLists() {
+	maps.Copy(app.AdMap, app.NewAds)
+	app.NewAds = make(map[string]Advertisement)
+}
+
+func buildMessageFromAd(ad Advertisement) string {
+	return fmt.Sprintf("%s\n in %s, %d\n%s", ad.Name, ad.Quarter, ad.PostalCode, ad.URL)
 }

@@ -2,15 +2,11 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-telegram/bot"
-	"github.com/go-telegram/bot/models"
 	"log"
 	"os"
 	"os/signal"
 )
-
-const channelName = "@GoFindFlatBot"
 
 func (app *Application) StartBot(apikey string, ready chan<- bool) {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
@@ -22,10 +18,10 @@ func (app *Application) StartBot(apikey string, ready chan<- bool) {
 	b.Start(ctx)
 }
 
-func (app *Application) sendMesssage() {
+func (app *Application) sendMessage(message string) {
 	_, err := app.TelegramBot.SendMessage(context.TODO(), &bot.SendMessageParams{
-		ChatID: "5629048775",
-		Text:   "Hello from Go",
+		ChatID: getChatID(),
+		Text:   message,
 	})
 
 	if err != nil {
@@ -33,10 +29,6 @@ func (app *Application) sendMesssage() {
 	}
 }
 
-func handler(ctx context.Context, b *bot.Bot, update *models.Update) {
-	b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID: update.Message.Chat.ID,
-		Text:   update.Message.Text,
-	})
-	fmt.Println(update.Message.Chat.ID)
+func getChatID() string {
+	return getDotEnvVariable("CHAT_ID")
 }
