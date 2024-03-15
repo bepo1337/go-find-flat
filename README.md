@@ -3,8 +3,8 @@
 This application is helping to find suitable flat advertisements. It automatically scrapes Kleinanzeigen every 10 minutes with specified criteria and will send a Telegram message if new suitable advertisements have been uploaded.
 
 To make this work you have to create a `.env` and include:
-- Create a Telegram Bot and get the [API key](https://core.telegram.org/bots/tutorial#obtain-your-bot-token)
-- Find out your Chat-ID 
+- Create a Telegram Bot and get the [API key](https://core.telegram.org/bots/tutorial#obtain-your-bot-token) `TELEGRAM_API_KEY=<YOUR_TELEGRAM_API_KEY`
+- your chat-id `CHAT_ID=<YOUR_CHAT_ID>`
 
 To customize searching behaviour, you have to modify the source code.
 For example the search URL or the blacklisted postal codes. 
