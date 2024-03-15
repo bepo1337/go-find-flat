@@ -19,6 +19,22 @@ var blacklistedPostalCodes = []int{
 	22041,                      //Wandsbek
 	22549,                      // Osdorf
 	22391, 22393, 22395, 22399, //Poppenbüttel
+	21149,        //Hausbruch
+	22309,        // Steilshoop
+	22143, 22145, // Rahlstedt
+	21029,        //Altengamme/Bergedorf
+	22335,        //Fuhlsbüttel
+	22419, 22417, //Langenhorn
+	22339, //Hummelsbüttel
+	22049, // Dulsberg
+	22589, //Blankenese
+	22113, // Billbrook
+	22589, //Iserbrook
+	22559, //Rissen
+	22765, //Ottensen
+	21033, //Lohbrügge
+	22609, //Otmatschen
+
 }
 
 func (app *Application) checkIfAdSuitable(ad Advertisement) bool {
