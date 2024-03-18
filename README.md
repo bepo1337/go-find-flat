@@ -1,6 +1,6 @@
 # Go-find-flat
 
-This application is helping to find suitable flat advertisements. It automatically scrapes Kleinanzeigen every 10 minutes with specified criteria and will send a Telegram message if new suitable advertisements have been uploaded.
+This application is helping to find suitable flat advertisements. It automatically scrapes Kleinanzeigen every couple minutes with specified criteria and will send a Telegram message with relevant info and the link if new suitable advertisements have been uploaded.
 
 To make this work you have to create a `.env` and include:
 - Create a Telegram Bot and get the [API key](https://core.telegram.org/bots/tutorial#obtain-your-bot-token) `TELEGRAM_API_KEY=<YOUR_TELEGRAM_API_KEY`
