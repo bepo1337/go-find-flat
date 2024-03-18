@@ -29,7 +29,7 @@ func main() {
 	go app.StartBot(getDotEnvVariable("TELEGRAM_API_KEY"), ready)
 	<-ready
 
-	ticker := time.NewTicker(7 * time.Minute)
+	ticker := time.NewTicker(3 * time.Minute)
 	defer ticker.Stop()
 	for range ticker.C {
 		app.scrape()

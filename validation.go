@@ -25,19 +25,19 @@ var blacklistedPostalCodes = []int{
 	21029,        //Altengamme/Bergedorf
 	22335,        //Fuhlsbüttel
 	22419, 22417, //Langenhorn
-	22339,                      //Hummelsbüttel
-	22049,                      // Dulsberg
-	22589,                      //Blankenese
-	22113,                      // Billbrook
-	22589,                      //Iserbrook
-	22559,                      //Rissen
-	22765,                      //Ottensen
-	21033,                      //Lohbrügge
+	22339,        //Hummelsbüttel
+	22049,        // Dulsberg
+	22589,        //Blankenese
+	22113,        // Billbrook
+	22589,        //Iserbrook
+	22559,        //Rissen
+	22765,        //Ottensen
+	21033, 21031, //Lohbrügge
 	22609,                      //Otmatschen
 	22397,                      //Duvenstedt
 	22761,                      //Bahrenfeld
 	22309, 22335, 22337, 22391, //Ohlsdorf
-	20535, //Hamm
+	20535, 20537, //Hamm
 }
 
 func (app *Application) checkIfAdSuitable(ad Advertisement) bool {
@@ -65,6 +65,27 @@ func (app *Application) checkName(name string) bool {
 
 	if nameContainsOne(name, "untermiete", "untervermietung", "zwischenmiete") {
 		app.InfoLogger.Printf("Didnt add ad because UNTERMIETE: %s\n", name)
+		return false
+	}
+
+	if nameContainsOne(name, "wg-zimmer", "wg zimmer") {
+		app.InfoLogger.Printf("Didnt add ad because WG-Zimmer: %s\n", name)
+		return false
+	}
+
+	if nameContainsOne(name, "wg-zimmer", "wg zimmer") {
+		app.InfoLogger.Printf("Didnt add ad because WG-Zimmer: %s\n", name)
+		return false
+	}
+
+	if nameContainsOne(name, "1-zimmer", "1 zimmer", "1,5-zimmer", "1.5-zimmer", "1,5 zimmer", "1.5 zimmer",
+		"1 1/2") {
+		app.InfoLogger.Printf("Didnt add ad because <2 rooms: %s\n", name)
+		return false
+	}
+
+	if nameContainsOne(name, "wir suchen", "paar sucht") {
+		app.InfoLogger.Printf("Didnt add ad because its not an offer: %s\n", name)
 		return false
 	}
 
